@@ -87,21 +87,22 @@ async function carregarDashboard() {
         document.getElementById('total-disponiveis').textContent  = equipamentos.filter(e => e.status === 'DISPONIVEL').length;
         document.getElementById('total-emprestados').textContent  = equipamentos.filter(e => e.status === 'EM_USO').length;
         document.getElementById('total-manutencao').textContent   = equipamentos.filter(e => e.status === 'MANUTENCAO').length;
-
+        document.getElementById('count-dash').textContent = equipamentos.length + ' equipamentos';
         const respostaMov = await fetch(API_URL + '/movimentacoes', { headers: cabecalho() });
         const movimentacoes = await respostaMov.json();
+
 
         const tbody = document.getElementById('dashboard-movimentacoes');
         tbody.innerHTML = '';
 
-        const ultimas = movimentacoes.slice(-5).reverse();
-        ultimas.forEach(mov => {
+        equipamentos.forEach(eq => {
             const linha = document.createElement('tr');
             linha.innerHTML = `
-        <td>${new Date(mov.dataHora).toLocaleString('pt-BR')}</td>
-        <td>${mov.equipamento.nome}</td>
-        <td>${mov.funcionario}</td>
-        <td>${mov.tipo === 'SAIDA' ? '<span class="badge badge-laranja">Saída</span>' : '<span class="badge badge-verde">Devolução</span>'}</td>
+        <td>${eq.codigo}</td>
+        <td>${eq.nome}</td>
+        <td>${badgeTipo(eq.tipo)}</td>
+        <td>${badgeStatus(eq.status)}</td>
+       <td><button class="btn-danger" onclick="excluirEquipamento(${eq.id}, 'equipamentos')">Excluir</button></td>
       `;
             tbody.appendChild(linha);
         });
@@ -125,8 +126,11 @@ async function carregarEquipamentos() {
             linha.innerHTML = `
         <td>${eq.codigo}</td>
         <td>${eq.nome}</td>
+        <td>${badgeTipo(eq.tipo)}</td>
+        <td>${eq.numeroSerie || '-'}</td>
         <td>${badgeStatus(eq.status)}</td>
-        <td><button class="btn-danger" onclick="excluirEquipamento(${eq.id})">Excluir</button></td>
+        <td>${eq.observacoes || '-'}</td>
+        <td><button class="btn-danger" onclick="excluirEquipamento(${eq.id}, 'equipamentos')">Excluir</button></td>
       `;
             tbody.appendChild(linha);
         });
@@ -137,9 +141,12 @@ async function carregarEquipamentos() {
 }
 
 async function cadastrarEquipamento() {
-    const nome   = document.getElementById('input-nome').value;
-    const codigo = document.getElementById('input-codigo').value;
-    const status = document.getElementById('input-status').value;
+    const nome        = document.getElementById('input-nome').value;
+    const codigo      = document.getElementById('input-codigo').value;
+    const numeroSerie = document.getElementById('input-numeroserie').value;
+    const tipo        = document.getElementById('input-tipo').value;
+    const status      = document.getElementById('input-status').value;
+    const observacoes = document.getElementById('input-observacoes').value;
 
     if (!nome || !codigo) { alert('Preencha o nome e o código!'); return; }
 
@@ -147,23 +154,37 @@ async function cadastrarEquipamento() {
         await fetch(API_URL + '/equipamentos', {
             method: 'POST',
             headers: cabecalho(),
-            body: JSON.stringify({ nome, codigo, status })
+            body: JSON.stringify({ nome, codigo, numeroSerie, tipo, status, observacoes })
         });
 
-        document.getElementById('input-nome').value   = '';
-        document.getElementById('input-codigo').value = '';
+        document.getElementById('input-nome').value        = '';
+        document.getElementById('input-codigo').value      = '';
+        document.getElementById('input-numeroserie').value = '';
+        document.getElementById('input-observacoes').value = '';
         carregarEquipamentos();
 
     } catch (erro) {
         console.log('Erro:', erro);
     }
 }
-
-async function excluirEquipamento(id) {
-    if (!confirm('Tem certeza?')) return;
+function teclaBarras(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        const codigo = document.getElementById('input-codigo').value;
+        if (codigo) {
+            document.getElementById('input-nome').focus();
+        }
+    }
+}
+async function excluirEquipamento(id, origem) {
+    if (!confirm('Tem certeza que deseja excluir este equipamento?')) return;
     try {
         await fetch(API_URL + '/equipamentos/' + id, { method: 'DELETE', headers: cabecalho() });
-        carregarEquipamentos();
+        if (origem === 'dashboard') {
+            carregarDashboard();
+        } else {
+            carregarEquipamentos();
+        }
     } catch (erro) {
         console.log('Erro:', erro);
     }
@@ -286,7 +307,27 @@ function badgeStatus(status) {
     if (status === 'MANUTENCAO') return '<span class="badge badge-vermelho">Manutenção</span>';
     return status;
 }
-
+function badgeTipo(tipo) {
+    const cores = {
+        ROTEADOR:   'badge-azul',
+        ONU:        'badge-verde',
+        CABO:       'badge-laranja',
+        SWITCH:     'badge-azul',
+        FERRAMENTA: 'badge-vermelho',
+        OUTROS:     'badge-cinza'
+    };
+    const nomes = {
+        ROTEADOR:   'Roteador',
+        ONU:        'ONU',
+        CABO:       'Cabo',
+        SWITCH:     'Switch',
+        FERRAMENTA: 'Ferramenta',
+        OUTROS:     'Outros'
+    };
+    const cor = cores[tipo] || 'badge-cinza';
+    const nome = nomes[tipo] || tipo;
+    return `<span class="badge ${cor}">${nome}</span>`;
+}
 if (token) {
     iniciarSistema();
 }

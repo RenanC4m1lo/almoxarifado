@@ -4,7 +4,7 @@ import com.almox.almoxarifado.model.Equipamento;
 import com.almox.almoxarifado.repository.EquipamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import com.almox.almoxarifado.repository.MovimentacaoRepository;
 import java.util.List;
 
 @Service
@@ -12,6 +12,7 @@ import java.util.List;
 public class EquipamentoService {
 
     private final EquipamentoRepository repository;
+    private final MovimentacaoRepository movimentacaoRepository;
 
     public List<Equipamento> listarTodos() {
         return repository.findAll();
@@ -35,6 +36,9 @@ public class EquipamentoService {
     }
 
     public void deletar(Long id) {
+        if (movimentacaoRepository.existsByEquipamentoId(id)) {
+            movimentacaoRepository.deleteByEquipamentoId(id);
+        }
         repository.deleteById(id);
     }
 }

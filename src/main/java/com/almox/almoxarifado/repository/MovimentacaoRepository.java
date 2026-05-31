@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long> {
+    boolean existsByEquipamentoId(Long equipamentoId);
+    void deleteByEquipamentoId(Long equipamentoId);
 }

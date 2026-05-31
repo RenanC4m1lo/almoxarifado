@@ -14,9 +14,23 @@ public class Equipamento {
 
     private String nome;
     private String codigo;
+    private String numeroSerie;
+    private String observacoes;
+
+    @Enumerated(EnumType.STRING)
+    private Tipo tipo;
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public enum Tipo {
+        ROTEADOR,
+        ONU,
+        CABO,
+        SWITCH,
+        FERRAMENTA,
+        OUTROS
+    }
 
     public enum Status {
         DISPONIVEL,

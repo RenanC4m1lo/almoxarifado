@@ -128,7 +128,8 @@
             <div class="dashboard-bottom">
                 <div class="panel">
                     <div class="panel-header">
-                        <span>Últimas Movimentações</span>
+                        <span>Equipamentos</span>
+                        <span class="badge-count" id="count-dash">0 equipamentos</span>
                     </div>
                     <div class="panel-body">
                         <table>
@@ -159,12 +160,22 @@
                 <div class="panel-body">
                     <div class="form-linha">
                         <input type="text" id="input-nome" placeholder="Nome do equipamento" class="input-dark">
-                        <input type="text" id="input-codigo" placeholder="Código / Patrimônio" class="input-dark">
+                        <input type="text" id="input-codigo" placeholder="Código / Patrimônio" class="input-dark" onkeydown="teclaBarras(event)">
+                        <input type="text" id="input-numeroserie" placeholder="Número de série" class="input-dark">
+                        <select id="input-tipo" class="input-dark">
+                            <option value="ROTEADOR">Roteador</option>
+                            <option value="ONU">ONU</option>
+                            <option value="CABO">Cabo</option>
+                            <option value="SWITCH">Switch</option>
+                            <option value="FERRAMENTA">Ferramenta</option>
+                            <option value="OUTROS">Outros</option>
+                        </select>
                         <select id="input-status" class="input-dark">
                             <option value="DISPONIVEL">Disponível</option>
                             <option value="EM_USO">Em uso</option>
                             <option value="MANUTENCAO">Em manutenção</option>
                         </select>
+                        <input type="text" id="input-observacoes" placeholder="Observações" class="input-dark">
                         <button class="btn-primary" onclick="cadastrarEquipamento()">
                             <i class="fa-solid fa-plus"></i> Cadastrar
                         </button>
@@ -183,7 +194,10 @@
                         <tr>
                             <th>Código</th>
                             <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Nº Série</th>
                             <th>Status</th>
+                            <th>Observações</th>
                             <th>Ações</th>
                         </tr>
                         </thead>
@@ -227,10 +241,11 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>Data / Hora</th>
-                            <th>Equipamento</th>
-                            <th>Funcionário</th>
+                            <th>Código</th>
+                            <th>Nome</th>
                             <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
                         </tr>
                         </thead>
                         <tbody id="tabela-movimentacoes-body">

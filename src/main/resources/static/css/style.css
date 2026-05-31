@@ -443,3 +443,4 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .btn-logout:hover { background-color: rgba(239,68,68,0.2); }
+.badge-cinza { background-color: rgba(100,116,139,0.15); color: #94a3b8; }
