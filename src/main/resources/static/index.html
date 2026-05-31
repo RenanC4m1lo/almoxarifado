@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almoxarifado</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">📦</div>
+        <div class="logo-text">
+            <span class="logo-title">Almoxarifado</span>
+            <span class="logo-sub">Sistema de Estoque</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" onclick="mostrarTela('dashboard')">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" onclick="mostrarTela('equipamentos')">
+            <i class="fa-solid fa-box"></i>
+            <span>Equipamentos</span>
+        </a>
+        <a href="#" class="nav-item" onclick="mostrarTela('movimentacoes')">
+            <i class="fa-solid fa-right-left"></i>
+            <span>Movimentações</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar">A</div>
+            <div class="user-details">
+                <span class="user-name">Administrador</span>
+                <span class="user-role">Sistema</span>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- CONTEUDO PRINCIPAL -->
+<main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-actions">
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                Sistema Online
+            </div>
+        </div>
+    </header>
+
+    <!-- TELAS -->
+    <div class="content">
+
+        <!-- TELA DASHBOARD -->
+        <div id="tela-dashboard" class="tela">
+
+            <div class="cards-grid">
+                <div class="metric-card">
+                    <div class="metric-icon icon-blue">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-valor" id="total-equipamentos">0</span>
+                        <span class="metric-label">Total de Equipamentos</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon icon-green">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-valor" id="total-disponiveis">0</span>
+                        <span class="metric-label">Disponíveis</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon icon-orange">
+                        <i class="fa-solid fa-person-walking"></i>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-valor" id="total-emprestados">0</span>
+                        <span class="metric-label">Em Uso</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon icon-red">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-valor" id="total-manutencao">0</span>
+                        <span class="metric-label">Em Manutenção</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-bottom">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span>Últimas Movimentações</span>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Data / Hora</th>
+                                <th>Equipamento</th>
+                                <th>Funcionário</th>
+                                <th>Tipo</th>
+                            </tr>
+                            </thead>
+                            <tbody id="dashboard-movimentacoes">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TELA EQUIPAMENTOS -->
+        <div id="tela-equipamentos" class="tela oculto">
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Cadastrar Equipamento</span>
+                </div>
+                <div class="panel-body">
+                    <div class="form-linha">
+                        <input type="text" id="input-nome" placeholder="Nome do equipamento" class="input-dark">
+                        <input type="text" id="input-codigo" placeholder="Código / Patrimônio" class="input-dark">
+                        <select id="input-status" class="input-dark">
+                            <option value="DISPONIVEL">Disponível</option>
+                            <option value="EM_USO">Em uso</option>
+                            <option value="MANUTENCAO">Em manutenção</option>
+                        </select>
+                        <button class="btn-primary" onclick="cadastrarEquipamento()">
+                            <i class="fa-solid fa-plus"></i> Cadastrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Lista de Equipamentos</span>
+                    <span class="badge-count" id="count-equipamentos">0 equipamentos</span>
+                </div>
+                <div class="panel-body">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabela-equipamentos-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TELA MOVIMENTACOES -->
+        <div id="tela-movimentacoes" class="tela oculto">
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Registrar Movimentação</span>
+                </div>
+                <div class="panel-body">
+                    <div class="form-linha">
+                        <select id="input-equipamento-mov" class="input-dark">
+                            <option value="">Selecione o equipamento</option>
+                        </select>
+                        <input type="text" id="input-funcionario" placeholder="Nome do funcionário" class="input-dark">
+                        <select id="input-tipo-mov" class="input-dark">
+                            <option value="SAIDA">Saída</option>
+                            <option value="ENTRADA">Devolução</option>
+                        </select>
+                        <button class="btn-primary" onclick="registrarMovimentacao()">
+                            <i class="fa-solid fa-right-left"></i> Registrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Histórico de Movimentações</span>
+                </div>
+                <div class="panel-body">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Data / Hora</th>
+                            <th>Equipamento</th>
+                            <th>Funcionário</th>
+                            <th>Tipo</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabela-movimentacoes-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
