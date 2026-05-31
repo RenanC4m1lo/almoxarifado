@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = window.location.origin;
 let token = localStorage.getItem('token');
 let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado') || '{}');
 
